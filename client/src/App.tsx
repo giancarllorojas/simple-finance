@@ -27,20 +27,20 @@ export default function App() {
 
   return (
     <Router>
-        <AppNav show={authState.loggedIn}/>
-        <div className="container max-w-screen-md mt-5">
-          <Switch>
-            <PrivateRoute exact path="/" component={Home}/>
-            <PrivateRoute exact path="/transactions" component={Transactions}/>
-            <PrivateRoute path="/transactions/new" component={AddTranscation}/>
-            <Route path="/login">
-              <Login/>
-            </Route>
-            <Route path="/signup">
-              <SignUp/>
-            </Route>
-          </Switch>
-        </div>
+      <AppNav show={authState.loggedIn}/>
+      <div className="container max-w-screen-md mt-5">
+        <Switch>
+          <PrivateRoute exact path="/" component={Home}/>
+          <PrivateRoute exact path="/transactions" component={Transactions}/>
+          <PrivateRoute path="/transactions/new" component={AddTranscation}/>
+          <Route path="/login">
+            <Login/>
+          </Route>
+          <Route path="/signup">
+            <SignUp/>
+          </Route>
+        </Switch>
+      </div>
     </Router>
   );
 }

@@ -1,24 +1,51 @@
-import React, { useState } from "react"
+import { gql, useMutation } from "@apollo/client"
+import { useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useHistory } from "react-router-dom"
 import Btn from "../components/UI/Btn"
 import TextInput from "../components/UI/TextInput"
 import { signIn } from "../store/auth/actions"
 
+const CREATE_USER = gql`
+  mutation createUser($email: String!, $password: String!, $fullname: String!){
+    createUser(options: {
+      email: $email,
+      password: $password,
+      fullname: $fullname
+    }){
+      token
+    }
+  }
+`
+
 const Login = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const [createUser, { loading }] = useMutation(CREATE_USER);
+
   const history = useHistory();
   const dispatch = useDispatch()
 
-  const onSignUp = () => {
-    dispatch(signIn('321321', {
-      email: email,
-      name: name
-    }))
-    history.push('/')
+  const onSignUp = async () => {
+    try{
+      const { data } = await createUser({ 
+        variables: { 
+          email: email,
+          password: password,
+          fullname: name
+        } 
+      })
+
+      dispatch(signIn(data.createUser.token, {
+        email: email,
+        name: name
+      }))
+      history.push('/')
+    }catch(e){
+      console.log(e)
+    }
   }
 
   return (
@@ -30,7 +57,7 @@ const Login = () => {
         <TextInput onChange={(e) => setPassword(e.target.value)} value={password} type="password" label="Password" placeholder="*******"/>
 
         <div className="flex justify-end pt-2">
-          <Btn onClick={onSignUp}>
+          <Btn loading={loading} onClick={onSignUp}>
             Create your account
           </Btn>
         </div>
